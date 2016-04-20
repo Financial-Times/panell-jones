@@ -11,21 +11,97 @@ var uploadThumbnail = function() {
 }
 
 var uploadToS3 = function() {
-    /*
-       http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/browser-examples.html#Uploading_a_local_file_using_the_File_API
-    */
-    console.log("upload peww peww");
-}
+    var bucket = new AWS.S3({params: {Bucket: 'jspc-mio-s3-test'}});
+
+    var status = document.getElementById('status'),
+        s3Status = document.createElement('span'),
+        s3Result = document.createElement('span'),
+        s3StatusString = document.createTextNode('Uploading to S3...'),
+        fileChooser = document.getElementById('asset');
+
+    s3Status.classList.add('task');
+    s3Result.classList.add('task');
+
+    s3Status.appendChild(s3StatusString);
+    status.appendChild(s3Status);
+
+    var file = fileChooser.files[0];
+    if (file) {
+        var params = {Key: file.name, ContentType: file.type, Body: file};
+        bucket.upload(params, function (err, data) {
+            status.appendChild(err ? failure(s3Result, "S3 Upload Failed") : success(s3Result) );
+        });
+    } else {
+        status.appendChild( failure(s3Result, "No file specified") );
+    }
+};
+
+var failure = function(node, msg) {
+    return setStatus('fail', node, msg);
+};
+
+var success = function(node) {
+    return setStatus('success', node);
+};
+
+var setStatus = function(type, node, msg){
+    if (typeof msg === 'undefined') { msg = ''; }
+
+    console.log(msg);
+
+    var f = document.createTextNode("✘ "),
+        s = document.createTextNode("✔ "),
+        m = document.createTextNode(msg),
+        end = document.createElement('br');
+
+    if (type == 'fail') {
+        node.classList.add('failure');
+        node.appendChild(f);
+        node.appendChild(m);
+    } else {
+        node.classList.add('success');
+        node.appendChild(s);
+    }
+    node.appendChild(end);
+    return node;
+};
 
 var main = function() {
+    AWS.config.region = 'eu-west-1';
+    AWS.config.update({accessKeyId: '', secretAccessKey: ''});
+
     $( "#uknowwhatsup" ).submit(function( event ) {
         event.preventDefault();
-        var tags = $( "#uknowwhatsup :input[name=tags]" ).val();
-        var f = {
-            section: $( "#uknowwhatsup input[name=section]" ).val(),
-            subsection: $( "#uknowwhatsup input[name=subsection]" ).val(),
-            tags: String(tags).split(" ")
+        var links = {
+            link_1: {
+                uri: $( "#uknowwhatsup input[name=link1]" ).val(),
+                text: $( "#uknowwhatsup input[name=link1text]" ).val(),
+            },
+            link_2: {
+                uri: $( "#uknowwhatsup input[name=link2]" ).val(),
+                text: $( "#uknowwhatsup input[name=link2text]" ).val(),
+            },
+            link_3: {
+                uri: $( "#uknowwhatsup input[name=link3]" ).val(),
+                text: $( "#uknowwhatsup input[name=link3text]" ).val(),
+            },
+            link_4: {
+                uri: $( "#uknowwhatsup input[name=link4]" ).val(),
+                text: $( "#uknowwhatsup input[name=link4text]" ).val(),
+            }
         };
+
+        var f = {
+            brand: $( "#uknowwhatsup input[name=brand]" ).val(),
+            detail: $( "#uknowwhatsup input[name=detail]" ).val(),
+            headline: $( "#uknowwhatsup input[name=headline]" ).val(),
+            lead: $( "#uknowwhatsup input[name=lead]" ).val(),
+            links: links,
+            producer: $( "#uknowwhatsup input[name=producer]" ).val(),
+            section: $( "#uknowwhatsup input[name=section]" ).val(),
+            tags: $( "#uknowwhatsup textarea[name=tags]" ).val().split(" "),
+        };
+
         console.log(f);
         console.log(JSON.stringify(f));
 
