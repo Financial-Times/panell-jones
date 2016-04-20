@@ -1,39 +1,106 @@
-var callIngestOnlyWorkflow = function() {
+var publish = function(f) {
+    return new Promise((resolve, reject) => {
+        if (f.publish){
+            resolve(callPublishWorkflow(f));
+        } else {
+            resolve(callIngestOnlyWorkflow(f));
+        }
+    });
+};
+
+var callIngestOnlyWorkflow = function(f) {
     console.log("ingest workflow");
-}
+    var statusLineArray = statusLine('Calling ingest only workflow...');
+    var status = statusLineArray[0],
+        result = statusLineArray[1];
 
-var callPublishWorkflow = function() {
+    f.ingested = true;
+    f.assetId = 123;
+    status.appendChild(success(result));
+
+    return f
+};
+
+var callPublishWorkflow = function(f) {
     console.log("publish workflow");
-}
+    var statusLineArray = statusLine('Calling ingest and publish workflow...');
+    var status = statusLineArray[0],
+        result = statusLineArray[1];
 
-var uploadThumbnail = function() {
-    console.log("thumbnailing");
-}
+    f.published = true;
+    f.assetId = 123;
+    status.appendChild(success(result));
 
-var uploadToS3 = function() {
-    var bucket = new AWS.S3({params: {Bucket: 'jspc-mio-s3-test'}});
+    return f;
+};
 
-    var status = document.getElementById('status'),
-        s3Status = document.createElement('span'),
-        s3Result = document.createElement('span'),
-        s3StatusString = document.createTextNode('Uploading to S3...'),
-        fileChooser = document.getElementById('asset');
+var uploadThumbnail = function(f) {
+    return new Promise((resolve, reject) => {
+        console.log("thumbnailing");
+        var statusLineArray = statusLine('Uploading thumbnails...');
+        var status = statusLineArray[0],
+            result = statusLineArray[1];
 
-    s3Status.classList.add('task');
-    s3Result.classList.add('task');
+        f.thumbnailUploaded = true;
+        status.appendChild(success(result));
 
-    s3Status.appendChild(s3StatusString);
-    status.appendChild(s3Status);
+        resolve(f);
+    });
+};
 
-    var file = fileChooser.files[0];
-    if (file) {
-        var params = {Key: file.name, ContentType: file.type, Body: file};
-        bucket.upload(params, function (err, data) {
-            status.appendChild(err ? failure(s3Result, "S3 Upload Failed") : success(s3Result) );
-        });
-    } else {
-        status.appendChild( failure(s3Result, "No file specified") );
-    }
+var sendMetadata = function(f) {
+    console.log("shipping metadata");
+    var statusLineArray = statusLine('Sending metadata');
+    var status = statusLineArray[0],
+        result = statusLineArray[1];
+
+    status.appendChild(success(result));
+
+    return f;
+};
+
+var statusLine = function(msg) {
+    var statusDiv = document.getElementById('status'),
+        status = document.createElement('span'),
+        result = document.createElement('span'),
+        statusString = document.createTextNode(msg);
+
+    status.classList.add('task');
+    result.classList.add('task');
+
+    status.appendChild(statusString);
+    statusDiv.appendChild(status);
+
+    return [status, result]
+};
+
+var uploadToS3 = function(f) {
+    return new Promise((resolve, reject) => {
+        var bucket = new AWS.S3({params: {Bucket: 'jspc-mio-s3-test'}});
+
+        var statusLineArray = statusLine('Uploading to S3...');
+        var status   = statusLineArray[0],
+            s3Result = statusLineArray[1];
+
+        var file = f.file;
+        if (file) {
+            var params = {Key: file.name, ContentType: file.type, Body: file};
+
+            bucket.upload(params, function (err, data) {
+                if (err) {
+                    status.appendChild(failure(s3Result, "S3 Upload Failed"));
+                    reject(f);
+                } else {
+                    status.appendChild(success(s3Result));
+                    f.bucket = bucket.config.params.Bucket;
+                    resolve(f);
+                }
+            });
+        } else {
+            status.appendChild( failure(s3Result, "No file specified") );
+            reject(f);
+        }
+    });
 };
 
 var failure = function(node, msg) {
@@ -66,12 +133,8 @@ var setStatus = function(type, node, msg){
     return node;
 };
 
-var main = function() {
-    AWS.config.region = 'eu-west-1';
-    AWS.config.update({accessKeyId: '', secretAccessKey: ''});
-
-    $( "#uknowwhatsup" ).submit(function( event ) {
-        event.preventDefault();
+var formData = function() {
+    return new Promise((resolve, reject) => {
         var links = {
             link_1: {
                 uri: $( "#uknowwhatsup input[name=link1]" ).val(),
@@ -93,26 +156,40 @@ var main = function() {
 
         var f = {
             brand: $( "#uknowwhatsup input[name=brand]" ).val(),
-            detail: $( "#uknowwhatsup input[name=detail]" ).val(),
+            detail: $( "#uknowwhatsup textarea[name=detail]" ).val(),
+            file: document.getElementById('asset').files[0],
             headline: $( "#uknowwhatsup input[name=headline]" ).val(),
             lead: $( "#uknowwhatsup input[name=lead]" ).val(),
             links: links,
             producer: $( "#uknowwhatsup input[name=producer]" ).val(),
+            publish: document.getElementById('publish').checked,
             section: $( "#uknowwhatsup input[name=section]" ).val(),
             tags: $( "#uknowwhatsup textarea[name=tags]" ).val().split(" "),
         };
 
-        console.log(f);
-        console.log(JSON.stringify(f));
+        resolve(f);
+    });
 
-        uploadToS3();
-        if ($('#publish').is(':checked')){
-            callPublishWorkflow(f);
-        } else {
-            callIngestOnlyWorkflow(f);
-        }
+};
 
-        uploadThumbnail();
+var main = function() {
+    AWS.config.region = 'eu-west-1';
+    AWS.config.update({accessKeyId: '', secretAccessKey: ''});
+
+    $( "#uknowwhatsup" ).submit(function( event ) {
+        event.preventDefault();
+
+        console.log('Got submit');
+
+        formData()
+            .then(uploadToS3)
+            .then(publish)
+            .then(uploadThumbnail)
+            .then(function(f) {
+                console.log(f);
+                console.log(JSON.stringify(f));
+            })
+            .then(sendMetadata);
     });
 };
 
