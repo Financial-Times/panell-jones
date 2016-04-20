@@ -1,20 +1,73 @@
 body {
     background-image: url("../img/tile.jpg");
+    background-color: rgba(255, 255, 255, 1);
     font-family: 'EB Garamond', serif;
+    font-size: 250%;
 }
 
-.container {
-    position: absolute;
-    left: 5%;
-    right: 5%;
-    background-color: #ffffff;
+.container-inner {
     border: 1px solid black;
-    opacity: 0.6;
-    filter: alpha(opacity=60); /* For IE8 and earlier */
+    /* background-color: rgba(255, 255, 255, 1); */
+}
+
+.container-inner::before {
+    content: "";
+    background-color: #e6e6e6;
+    opacity: 0.3;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+
+}
+
+body::after {
+    content: "";
+    background-image: url("../img/ft.jpg");
+    opacity: 0.15;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
 }
 
 textarea {
-    width: 90%;
-    left: 5%;
     height: 150px;
+    padding: 1px;
+}
+
+.wide {
+    min-width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #000;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.task {
+    font-weight: 200%;
+    color: #fff
+}
+
+.success {
+    color: green;
+}
+
+.failure {
+    color: red;
 }
