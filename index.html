@@ -3,33 +3,219 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Super Duper FT Floopity Flooper</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link href='https://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css" charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
   </head>
   <body>
-    <div class="loading-spinner"></div>
-    <div class="outer-container">
-      <div class="container">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1 col-lg-4 col-lg-offset-4">
+          <div id="status"></div>
+          </div>
+      <div class="row">
+      <div class="container-inner col-md-12 col-lg-10 col-lg-offset-1 col-xs-12 ">
+
         <form id="uknowwhatsup">
-          <p>Section: <label><input type="text" name="section" placeholder="markets"></label></p>
-          <p>Sub section: <label><input type="text" name="subsection" placeholder="some shite"></label></p>
-          <p>Key words: <label><textarea name="tags" placeholder="Obama IMF Elephants"></textarea></label></p>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Brand:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="brand" placeholder="First FT"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Section:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="section" placeholder="World"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Producer:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="producer" placeholder="Senor Spielbergo"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 col-xs-12">
+              <div class="col-md-12 col-xs-12">
+                Key words:
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 col-xs-12">
+              <div class="col-md-12 col-xs-12">
+                <label><textarea class="wide" name="tags" placeholder="Obama IMF Elephants"></textarea></label>
+              </div>
+             </div>
+          </div>
 
           <hr>
 
-          <p>Publish? <label><input type="checkbox" name="publish" id="publish"></label></p>
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Headline:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="headline" placeholder="Watch me"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Lead:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="lead" placeholder="This is ace"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Detail:
+              </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <div class="col-md-8 col-xs-12">
+                <label><textarea class="wide" name="detail" placeholder="Watch some dude you've never heard of talk about stuff"></textarea></label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link1" placeholder="https://ft.com/stuff"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link Text:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link1text" placeholder="FT Stuff"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link2" placeholder="https://ft.com/stuff"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link Text:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link2text" placeholder="FT Stuff"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link3" placeholder="https://ft.com/stuff"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link Text:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link3text" placeholder="FT Stuff"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link4" placeholder="https://ft.com/stuff"></label>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
+                Link Text:
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <label><input class="wide" type="text" name="link4text" placeholder="FT Stuff"></label>
+              </div>
+            </div>
+          </div>
+
+
 
           <hr>
 
-          <p>Thumbnail: <label><input type="file" name="thumbnail"></label></p>
-          <input type="submit">
+          <div class="row">
+            <div class="col-md-12 col-xs-12">
+              <div class="col-md-12 col-xs-12">
+                Publish? <input type="checkbox" name="publish" id="publish" checked>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <div class="col-md-12 col-xs-12">
+                <p>Thumbnail: <label><input type="file" name="thumbnail"></label></p>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12" id="uploader">
+              <div class="col-md-12 col-xs-12">
+                <p>Asset: <label><input type="file" name="asset" id="asset"></label></p>
+              </div>
+            </div>
+
+          </div>
+          <input class="wide" type="submit">
         </form>
+      </div>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.3.min.js"></script>
     <script src="js/CSInterface-4.0.0.js"></script>
     <script src="js/main.js"></script>
   </body>
