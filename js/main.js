@@ -56,22 +56,25 @@ var sendMetadata = function(f) {
             result = statusLineArray[1];
 
         var xhr = new XMLHttpRequest();
-        /*
-          TODO: stop hardcoding development stuffs
-         */
         var url = "http://debbiedeth.osb.ft.com:32780/"
-        xhr.open("POST", url, false);
 
-        xhr.send(JSON.stringify(f));
-
-        if (xhr.status == 200) {
+        xhr.addEventListener('load', (event) => {
             status.appendChild(success(result));
             f.metdataUrl = url + JSON.parse(xhr.response).uuid;
             resolve(f);
-        } else {
+        });
+
+        xhr.addEventListener('error', (event) => {
             status.appendChild(failure(result, xhr.statusText));
             reject(f);
-        }
+        })
+
+        /*
+          TODO: stop hardcoding development stuffs
+         */
+        xhr.open("POST", url);
+
+        xhr.send(JSON.stringify(f));
     });
 };
 
