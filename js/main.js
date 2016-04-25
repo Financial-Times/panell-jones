@@ -49,29 +49,30 @@ var uploadThumbnail = function(f) {
 };
 
 var sendMetadata = function(f) {
-    console.log("shipping metadata");
-    var statusLineArray = statusLine('Sending metadata');
-    var status = statusLineArray[0],
-        result = statusLineArray[1];
+    return new Promise((resolve, reject) => {
+        console.log("shipping metadata");
+        var statusLineArray = statusLine('Sending metadata...');
+        var status = statusLineArray[0],
+            result = statusLineArray[1];
 
-    status.appendChild(success(result));
+        var xhr = new XMLHttpRequest();
+        /*
+          TODO: stop hardcoding development stuffs
+         */
+        var url = "http://debbiedeth.osb.ft.com:32780/"
+        xhr.open("POST", url, false);
 
-    return f;
-};
+        xhr.send(JSON.stringify(f));
 
-var statusLine = function(msg) {
-    var statusDiv = document.getElementById('status'),
-        status = document.createElement('span'),
-        result = document.createElement('span'),
-        statusString = document.createTextNode(msg);
-
-    status.classList.add('task');
-    result.classList.add('task');
-
-    status.appendChild(statusString);
-    statusDiv.appendChild(status);
-
-    return [status, result]
+        if (xhr.status == 200) {
+            status.appendChild(success(result));
+            f.metdataUrl = url + JSON.parse(xhr.response).uuid;
+            resolve(f);
+        } else {
+            status.appendChild(failure(result, xhr.statusText));
+            reject(f);
+        }
+    });
 };
 
 var uploadToS3 = function(f) {
@@ -93,6 +94,7 @@ var uploadToS3 = function(f) {
                 } else {
                     status.appendChild(success(s3Result));
                     f.bucket = bucket.config.params.Bucket;
+                    f.fileName = f.file.name;
                     resolve(f);
                 }
             });
@@ -102,6 +104,40 @@ var uploadToS3 = function(f) {
         }
     });
 };
+
+var promiseSuccess = function(e){
+    var statusLineArray = statusLine('Ingestion...');
+    var status   = statusLineArray[0],
+        result = statusLineArray[1];
+
+    status.appendChild( success(result) );
+};
+
+var promiseFailure = function(e) {
+    var m = e instanceof Error ? '' : 'Ingestion...'
+
+    var statusLineArray = statusLine(m);
+    var status = statusLineArray[0],
+        result = statusLineArray[1];
+
+    status.appendChild( failure(result, e.message) );
+};
+
+var statusLine = function(msg) {
+    var statusDiv = document.getElementById('status'),
+        status = document.createElement('span'),
+        result = document.createElement('span'),
+        statusString = document.createTextNode(msg);
+
+    status.classList.add('task');
+    result.classList.add('task');
+
+    status.appendChild(statusString);
+    statusDiv.appendChild(status);
+
+    return [status, result]
+};
+
 
 var failure = function(node, msg) {
     return setStatus('fail', node, msg);
@@ -165,6 +201,7 @@ var formData = function() {
             publish: document.getElementById('publish').checked,
             section: $( "#uknowwhatsup input[name=section]" ).val(),
             tags: $( "#uknowwhatsup textarea[name=tags]" ).val().split(" "),
+            thumbnail: document.getElementById('thumbnail').files[0],
         };
 
         resolve(f);
@@ -185,11 +222,14 @@ var main = function() {
             .then(uploadToS3)
             .then(publish)
             .then(uploadThumbnail)
+            .then(sendMetadata)
             .then(function(f) {
                 console.log(f);
                 console.log(JSON.stringify(f));
             })
-            .then(sendMetadata);
+            .then(promiseSuccess)
+            .catch(promiseFailure);
+
     });
 };
 
