@@ -1,0 +1,12 @@
+@media (max-width: 500px) {
+  label {
+    width: 100%;
+    display: block;
+  }
+
+  input[type=text],
+  textarea {
+      width: 100%;
+      display: block;
+  }
+}

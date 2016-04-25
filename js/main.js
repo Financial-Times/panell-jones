@@ -133,6 +133,8 @@
             result = document.createElement('span'),
             statusString = document.createTextNode(msg);
 
+        statusDiv.classList.add('status--show')
+
         status.classList.add('task');
         result.classList.add('task');
 
@@ -156,17 +158,17 @@
 
         console.log(msg);
 
-        var f = document.createTextNode("✘ "),
-            s = document.createTextNode("✔ "),
+        var f = document.createTextNode(" ✘ "),
+            s = document.createTextNode(" ✔ "),
             m = document.createTextNode(msg),
             end = document.createElement('br');
 
         if (type == 'fail') {
-            node.classList.add('failure');
+            node.classList.add('task--failure');
             node.appendChild(f);
             node.appendChild(m);
         } else {
-            node.classList.add('success');
+            node.classList.add('task--success');
             node.appendChild(s);
         }
         node.appendChild(end);
@@ -175,38 +177,40 @@
 
     var formData = function() {
         return new Promise((resolve, reject) => {
-            var links = {
-                link_1: {
-                    uri: $( "#uknowwhatsup input[name=link1]" ).val(),
-                    text: $( "#uknowwhatsup input[name=link1text]" ).val(),
-                },
-                link_2: {
-                    uri: $( "#uknowwhatsup input[name=link2]" ).val(),
-                    text: $( "#uknowwhatsup input[name=link2text]" ).val(),
-                },
-                link_3: {
-                    uri: $( "#uknowwhatsup input[name=link3]" ).val(),
-                    text: $( "#uknowwhatsup input[name=link3text]" ).val(),
-                },
-                link_4: {
-                    uri: $( "#uknowwhatsup input[name=link4]" ).val(),
-                    text: $( "#uknowwhatsup input[name=link4text]" ).val(),
-                }
-            };
+          var form = $("#uknowwhatsup");
 
-            var f = {
-                brand: $( "#uknowwhatsup input[name=brand]" ).val(),
-                detail: $( "#uknowwhatsup textarea[name=detail]" ).val(),
-                file: document.getElementById('asset').files[0],
-                headline: $( "#uknowwhatsup input[name=headline]" ).val(),
-                lead: $( "#uknowwhatsup input[name=lead]" ).val(),
-                links: links,
-                producer: $( "#uknowwhatsup input[name=producer]" ).val(),
-                publish: document.getElementById('publish').checked,
-                section: $( "#uknowwhatsup input[name=section]" ).val(),
-                tags: $( "#uknowwhatsup textarea[name=tags]" ).val().split(" "),
-                thumbnail: document.getElementById('thumbnail').files[0],
-            };
+          var links = {
+              link_1: {
+                  uri: $( "input[name=link1]", form ).val(),
+                  text: $( "input[name=link1text]", form ).val(),
+              },
+              link_2: {
+                  uri: $( "input[name=link2]", form ).val(),
+                  text: $( "input[name=link2text]", form ).val(),
+              },
+              link_3: {
+                  uri: $( "input[name=link3]", form ).val(),
+                  text: $( "input[name=link3text]", form ).val(),
+              },
+              link_4: {
+                  uri: $( "input[name=link4]", form ).val(),
+                  text: $( "input[name=link4text]", form ).val(),
+              }
+          };
+
+          var f = {
+              brand: $( "input[name=brand]", form ).val(),
+              detail: $( "textarea[name=detail]", form ).val(),
+              file: document.getElementById('asset').files[0],
+              headline: $( "input[name=headline]", form ).val(),
+              lead: $( "input[name=lead]", form ).val(),
+              links: links,
+              producer: $( "input[name=producer]", form ).val(),
+              publish: document.getElementById('publish').checked,
+              section: $( "input[name=section]", form ).val(),
+              tags: $( "textarea[name=tags]", form ).val().split(" "),
+              thumbnail: document.getElementById('thumbnail').files[0],
+          };
 
             resolve(f);
         });
